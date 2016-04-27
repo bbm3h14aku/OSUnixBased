@@ -1,0 +1,36 @@
+##############################
+
+IST
+-Bootloader
+-Kernel
+-Videotreiber
+
+SOLL
+-Prozessverwaltung
+
+##############################
+
+Paul
+-Tutorial fertigmachen     [ ]
+-Bootloader verstehen      [ ]
+-Konzept                   [ ]
+
+Jan
+-Kernel-modifizieren       [ ]
+
+###############################
+
+Fragen
+-Wie groß ist der Datenbus zwischen CPU und RAM?
+-Paging beim Global Descriptor Table
+
+##############################
+
+Links
+Debugging:
+-https://msdn.microsoft.com/en-us/windows/hardware/hh852365 
+-bochs (livetime debugging)
+-http://www.codeproject.com/Articles/16582/Debugging-and-Building-Operating-Systems
+-http://home.in.tum.de/~hauffa/slides.pdf
+
+
