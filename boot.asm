@@ -1,18 +1,26 @@
 org 0x7C00 ; start addresse des bootloaders
-;	Einrichten des Stacks und Segment Reg
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;	Einrichten des Stacks und Segmant Reg;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 	xor ax, ax
 	mov ds, ax
 	mov es, ax
 	mov ss, ax
 	mov sp, ax
 	
-;	lesen des Kernels von der floppy
-	mov [bootdrive], dl		; bootdive liegt default mäßig in DL
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;	lesen des Kernels von der floppy	  ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	mov [bootdrive], dl		;das boot laufwerk liegt durch das BIOS in dl
 	
 load_kernel:
 	xor ax, ax	;setze ax auf 0 (reset funktion)
 	int 0x13
 	jc load_kernel ;bei problemen neu laden
+	
 	mov bx, 0x8000 ;setzte die start addresse des kernels
 	
 	; parameter für die reading_function setzten, 8 bit weise für eine bessere übersicht
@@ -29,7 +37,15 @@ load_kernel:
 	mov si, loadmsg
 	call print_string
 	
-	jmp 0x0000:0x8000 ; Pysikalische Adresse des Kernels
+;;;;;;;;;;;;;;;;;;;;;;;;
+;; gehe in den kernel ;;
+;;;;;;;;;;;;;;;;;;;;;;;;
+	
+	jmp 0x0000:0x8000 ;adresse des kernels
+	
+;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;	rufe print_string auf;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 print_string:
 	mov ah, 0x0E	;VGA Bios fnct. 0x0E: teletyp
@@ -41,9 +57,13 @@ print_string:
 	jmp .loop
 .done:
 	ret
-; VAR
+
+;;;;;;;;;;;;;;;;;;;;;;
+;; 		daten		;;
+;;;;;;;;;;;;;;;;;;;;;;
+
 	bootdrive db 0
-	loadmsg db "Heimdall Message: Der Kernel wird geladen ...", 13, 10, 0
+	loadmsg db "Der Kernel wird geladen", 13, 10, 0
 	
 	times 510-($-$$) hlt
 	db 0x55
