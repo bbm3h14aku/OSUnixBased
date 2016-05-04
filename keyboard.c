@@ -28,7 +28,7 @@ void keyboard_init()														// Warte falls der Puffer leer ist
 
 unsigned int FetchAndAnalyzeScancode()
 {
-	uint scancode;															// tastatur scancode
+	unsigned int scancode;															// tastatur scancode
 	while(TRUE)																// Schleife nach dem eine (w/o shift key) Taste gedrückt wurde
 	{
 		scancode = inportb(0x60);											// 0x60 lese scancode von der Tastatur
@@ -53,10 +53,10 @@ unsigned int FetchAndAnalyzeScancode()
 	return scancode;
 }
 
-void uchar const kgetch()													// Scancode --> ASCII
+void unsigned char const kgetch()													// Scancode --> ASCII
 {
-	uint scan;																// Scancode von der Tastatur
-	uchar retchar;															// retchar --> rückgabe wert des scnacode als ASCII Code
+	unsigned int scan;																// Scancode von der Tastatur
+	unsigned char retchar;															// retchar --> rückgabe wert des scnacode als ASCII Code
 	scan = FetchAndAnalyzeScancode();										// hol den scancode und analysiere ob Shift gedrückt wurde
 	if(ShiftKeyDown)
 		retchar = asciiShift[scan];											// gedrückter ShiftCode
