@@ -4,7 +4,7 @@
  * by Jan - Frederic Kurzweil
  * Funktionsumfang
  * - kclrscr()
- * 		leert den scrreen
+ * 		leert den screen
  * - kprintf(nachricht, zeile, attribut)
  * 		gibt eine nachricht aus das erste attribut bezeichnet die nachricht selbst
  *		das zweite Attribut bezeichnet die zeile
