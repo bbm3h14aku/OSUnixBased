@@ -104,7 +104,7 @@ loop_start:
 	call empty_8042
 	
 	mov al, 0xD1
-	out 0x64, al
+	out 0x64
 	call empty_8042
 	
 	mov al, 0xDF
@@ -112,9 +112,9 @@ loop_start:
 	call empty_8042
 	
 .A20_done:
-	mov eax, cr0
-	or eax, 1
-	mov cr0, eax
+	mov rax, cr0
+	or rax, 1
+	mov cr0, rax
 	
 	jmp 0x8:ProtectedMode 
 	
@@ -229,28 +229,28 @@ ProtectedMode:
 	mov gs, ax
 	mov esp, 0x200000
 	
-	call clrscr_32
+	call crscr_32
 	mov ah, 0x01
 .endlessloop:
-	call xWaitingloop
+	call Waitingloop
 	inc ah
 	and ah, 0x0f
 	mov esi, msg_pm2
 	call PutStr_32
-	cmp dword [xPutStr_Ptr], 25 * 80 *2 + 0xB8000
+	cmp dword [PutStr_Ptr], 25 * 80 *2 + 0xB8000
 	jb .endlessloop
-	cmp dword [xPutStr_Ptr], 0xB8000
+	cmp dword [PutStr_Ptr], 0xB8000
 	jmp .endlessloop
 	
-xWaitingloop:
+Waitingloop:
 	mov ebx, 0x9FFFF
 .loop_start:
 	dec ebx
 	jnz .loop_start
 	ret
 	
-PutStr_64:
-	mov edi, [xPutStr_Ptr]
+PutStr_32:
+	mov edi, [PutStr_Ptr]
 .nextchar:
 	lodsb
 	test al, al
@@ -258,73 +258,17 @@ PutStr_64:
 	stosw
 	jmp .nextchar
   .end:
-	mov [xPutStr_Ptr], edi
+	mov [PutStr_Ptr], edi
 	ret
-	
-clrscr_32:
+crlscr_32:
 	mov edi, 0xB8000
-	mov [xPutStr_Ptr], edi
+	mov [PutStr_Ptr], edi
 	mov ecx, 40 * 25
 	mov eax, 0x07200720
 	rep stosd
 	ret
-
-xPutStr_Ptr dd 0xB8000
-
-[Bits 64]
-
-amd64:
-	mov ax, 0x10
-	mov ds, ax
-	mov ss, ax
-	mov es, ax
-	xor rax, rax
-	mov fs, ax
-	mov gs, ax
-	mov rsp, 0x200000
-	
-	call clrscr_64
-	mov ah, 0x01
-.xendlessloop:
-	call Waitingloop
-	inc ah
-	and ah, 0x0f
-	mov rsi, msg_pm2
-	call PutStr_64
-	cmp dword [PutStr_Ptr], 25 * 80 *2 + 0xB8000
-	jb .xendlessloop
-	cmp dword [PutStr_Ptr], 0xB8000
-	jmp .xendlessloop
-	
-Waitingloop:
-	mov rbx, 0x9FFFF
-.xloop_start:
-	dec rbx
-	jnz .xloop_start
-	ret
-	
-PutStr_64:
-	mov rdi, [xPutStr_Ptr]
-.nextchar:
-	lodsb
-	test al, al
-	jz .end
-	stosw
-	jmp .nextchar
-  .end:
-	mov [PutStr_Ptr], rdi
-	ret
-	
-clrscr_64:
-	mov rdi, 0xB8000
-	mov [PutStr_Ptr], rdi
-	mov rcx, 40 * 25
-	mov rax, 0x07200720
-	rep stosd
-	ret
-
 PutStr_Ptr dd 0xB8000
-	
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;		Strings					  ;;
