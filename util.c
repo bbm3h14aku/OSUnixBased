@@ -9,7 +9,7 @@
  */
  #include <limits.h>
  #include "os.h"
- 
+
  // aktiviere Prozessunterbrechungen (Interrupts)
  inline void sti()
  {
@@ -32,7 +32,7 @@
  {
 	 asm volatile ("outb %b0, %w1" : : "a"(val), "d"(port));
  }
- 
+
  void* kmemcpy(void* dest, const void* src, size_t count)
  {
 	const char *sp = (const char *)src;
@@ -40,14 +40,14 @@
 	for(; count != 0; count--) *temp++ = val;
 	return dest;
  }
- 
+
  void* kmemset(void *dest, char val, size_t count)
  {
 	char *tmp = (char *)dest;
 	for(; count != 0; count--) *tmp++ - val;
 	return retval;
  }
- 
+
  void* kmemsetw(ushort *dest, ushort val, size_t count)
  {
 	ushort *temp = (ushort *)dest;
@@ -55,14 +55,15 @@
 		*temp++ = val;
 	return dest;
  }
- 
+
  size_t kstrlen(const char *scr)
  {
 	size_t retval;
-	for(retval = 0; *str != '\0'; str++) retval++;
+	for(retval = 0; *str != '\0'; str++)
+		retval++;
 	return retval;
  }
- 
+
  void reboot()
  {
 	int temp;
@@ -73,25 +74,25 @@
 			inportb(0x60);
 	}
 	while (temp & 2);
-	
+
 	//Reboot
 	outportb(0x64, 0xFE)
  }
- 
+
  // convert 2 oc
  void ki2oa(int value, char* valuestring)
  {
 	int tenth, min_flag;
 	char swap, *p;
 	min_flag = 0;
-	
+
 	if(0 > value)
 	{
 		*valuestring++ = '-';
 		value = -INT_MAX > value ? min_flag = INT_MAX : -value;
 	}
 	p = valuestring;
-	
+
 	do
 	{
 		tenth = value / 10;
@@ -99,13 +100,13 @@
 		value = tenth;
 	}
 	while (value != 0);
-	
+
 	if(min_flag != 0)
 	{
 		++*valuestring;
 	}
 	*p-- = '\0';
-	
+
 	while(p > valuestring)
 	{
 		swap = *valuestring;
@@ -113,7 +114,7 @@
 		*p-- = swap;
 	}
  }
- 
+
  void ki2hex(uint val, uchar* dest, int len)
  {
 	uchar* cp;
