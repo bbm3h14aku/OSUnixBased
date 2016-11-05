@@ -2,24 +2,32 @@
 #ifndef OS_H
 #define OS_H
 
-#define TRUE 	1	
+#define TRUE 	1
 #define FALSE 	0
+
+#define x86 1
 
 typedef unsigned int size_t;
 typedef unsigned int uint;
 typedef unsigned char uchar;
 typedef unsigned short ushort;
 typedef unsigned long ulong;
+typedef struct { char[] username, char[] password }user;
+
+static int buffer[100] = {0};
 
 // This defines what the stack looks like after an ISR was running
 struct
 {
 	unsigned int gs, fs, es, ds;
-	unsigned int rdi, rsi, rbp, rsp, rbx, rcx, rax;
 	unsigned int int_no, err_code;
-//	unsigned int edi, esi, ebp, esp, ebx, ecx, eax;
-//	unsigned int eip, cs, eflags, userrsp, ss;
+#ifdef x86
+	unsigned int edi, esi, ebp, esp, ebx, ecx, eax;
+	unsigned int eip, cs, eflags, userrsp, ss;
+#elif
+	unsigned int rdi, rsi, rbp, rsp, rbx, rcx, rax;
 	unsigned int rip, cs, rflags, userrsp, ss;
+#endif
 };
 
 extern void kclrscr();
@@ -28,7 +36,7 @@ extern void upcrs(int row, int col);
 
 extern void keyboard_init();
 extern void unsigned char const kgetch();
-//extern void unsigned char[] const kgetstr();	//TODO: eine get string funktion schreiben bzw eine string struct
+extern char * scanf();
 extern unsigned int FetchAndAnalyzeScancode();
 extern void keyboard_handler(struct regs* r);
 
@@ -64,4 +72,3 @@ extern void irq_handler(struct regs* r);
 extern int kpower(int base, int n);
 
 #endif
-

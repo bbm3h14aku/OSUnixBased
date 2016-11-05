@@ -9,22 +9,22 @@ org 0x7C00 ; start addresse des bootloaders
 	mov es, ax
 	mov ss, ax
 	mov sp, ax
-	
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;	lesen des Kernels von der floppy	  ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 	mov [bootdrive], dl		;das boot laufwerk liegt durch das BIOS in dl
-	
+
 load_kernel:
 	xor ax, ax	;setze ax auf 0 (reset funktion)
 	int 0x13
 	jc load_kernel ;bei problemen neu laden
-	
+
 	mov bx, 0x8000 ;setzte die start addresse des kernels
-	
-	; parameter für die reading_function setzten, 8 bit weise für eine bessere übersicht
-	mov dl, [bootdrive] ;laufwerk auswählen
+
+	; parameter fÃ¼r die reading_function setzten, 8 bit weise fÃ¼r eine bessere Ã¼bersicht
+	mov dl, [bootdrive] ;laufwerk auswÃ¤hlen
 	mov al, 0x10	;lies 10 Sektoren
 	mov ch, 0x0		;0 Zylinder
 	mov cl, 0x2		;2 Sektoren
@@ -32,17 +32,17 @@ load_kernel:
 	mov ah, 0x2		;"function read"
 	int 0x13
 	jc load_kernel ; bei problemen neuer versuch
-	
+
 	; zeige lodadmsg
 	mov si, loadmsg
 	call print_string
-	
+
 ;;;;;;;;;;;;;;;;;;;;;;;;
 ;; gehe in den kernel ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;
-	
-	jmp 0x0000:0x8000 ;adresse des kernels
-	
+
+	jmp 0x8000 ;adresse des kernels
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;	rufe print_string auf;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -51,7 +51,7 @@ print_string:
 	mov ah, 0x0E	;VGA Bios fnct. 0x0E: teletyp
 .loop:
 	lodsb			;hole ein byte aus si
-	test al, al		;null prüfung?
+	test al, al		;null prÃ¼fung?
 	jz .done		;wenn null gehe aus der schleife
 	int 0x10		;wenn nicht gib zeichen aus
 	jmp .loop
@@ -63,8 +63,8 @@ print_string:
 ;;;;;;;;;;;;;;;;;;;;;;
 
 	bootdrive db 0
-	loadmsg db "Der Kernel wird geladen", 13, 10, 0
-	
+	loadmsg db "Moonshine Bootloader: Der Kernel wird geladen", 13, 10, 0
+
 	times 510-($-$$) hlt
 	db 0x55
 	db 0xAA

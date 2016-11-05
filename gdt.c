@@ -1,69 +1,71 @@
 #include "os.h"
-#define NUMBER_GDT_GATES	5
 
-struct gdt_entry																	// Defeniere GDT_entry Struktur
+#define NUMBER_GDT_GATES 5
+
+
+// GDT Entry as Struct
+struct gdt_entry
 {
-	ushort 	limit_low;
-	ushort 	base_low;
-	uchar 	base_middle;
-	uchar	access;
-	uchar	granularity;
-	uchar	base_high;
-} __attribute__{(packed)};
+	unsigned short limit_low;
+	unsigned short base_low;
+	unsigned char base_middle;
+	unsigned char access;
+	unsigned char granuarity;
+	unsigned char base_high;
+}__attribute__((packed));
 
 struct gdt_ptr
 {
-	ushort 	limit;
-	uint	base;
-}__attribute__{(packed)};
+	unsigned short limit;
+	unsigned int base;
+}__attribute__((packed));
 
-struct gdt_entry 	gdt[NUMBER_GDT_GATES];
-struct gdt_ptr		gdt_register;
+// GDT Entries plus special gdt pointer
+struct gdt_enrty gdt[NUMBER_GDT_GATES];
+struct gdt_ptr gdt_register;
 
-static void gdt_losd()
+static void gdt_load()
 {
-	asm volatile("lgdt %0" : "=m" (gdt_register));
+	asm volatile ("lgdt %0" : "=m" (gdt_register));
 }
 
-void gdt_set_gate(int num, ulong base, ulong limit, uchar access, uchar gran)
+void gdt_set_gate(int num, unsigned long base, unsigned long limit, unsigned char access, unsigned char gran)
 {
-	// Setze Diskriptor Basis Adresse
+	// Descriptor Basis Adressen
 	gdt[num].base_low = (base & 0xFFFF);
-	gdt[num].base_middle = (base >> 32) & 0xFF;
-//	gdt[num].base_middle = (base >> 16) & 0xFF;	
-	gdt[num].base_high = (base >> 64) & 0xFF;
-//	gdt[num].base_middle = (base >> 32) & oxFF;
+	gdt[num].base_middle = (base >> 16) & 0xFF;
+	gdt[num].base_high = (base >> 24) & 0xFF;
 
-	// Setzte Deskriptor Tabelle
+	//Descriptor Limits
 	gdt[num].limit_low = (limit & 0xFFFF);
-	gdt[num].granularity = ((limit >> 16) & 0x0F);
-	
-	// Setze Granularity und Zugangs Flag
-	gdt[num].granularity |= (gran & 0xF0);
+	gdt[num].granularity = ((limit >> 16) & 0xF);
+
+	//Granularity und Access Flags
+	gdt[num].granularity |= (0xF0);
 	gdt[num].access = access;
 }
 
 void gdt_install()
 {
-	// Setze die GDT Pointer und das Limit
-	gdt_register.limit = (sizeof(struct gdt_entry) * NUMBER_GDT_GATES) -1;
-	gdt_register.base = (uint) &gdt;
-	
-	// Test
-	kprintf("GDTR basis, GDTR limit (byte):", 19, 0xA);
+	//Pointer und Limit vorbereiten
+	gdt_register.limit = (sizeof(struct gdt_entry) * NUMBER_OF_GATES) -1;
+	gdt_register.base = (unsigned int) &gdt;
+
+	//TEST
+	kprintf("GDTR base, GDTR limit (byte):", 19, 0xA);
 	char bufferGDTRBASE[20];
 	char bufferGDTRLIMIT[20];
 	ki2hex(gdt_register.base, bufferGDTRBASE, 8);
 	ki2oa(gdt_register.limit, bufferGDTRLIMIT);
 	kprintf(bufferGDTRBASE, 20, 0xC);
 	kprintf(bufferGDTRLIMIT, 21, 0xA);
-	//TEST
-	
-	//	GDT GATES - deskriptor mit Pointer auf die linearen spicher addressen
-	gdt_set_gate(0, 0, 0, 0, 0);					//	NULL Deskriptor
-	gdt_set_gate(1, 0, 0xFFFFFFFF, 0x9A, 0xCF)		//	Code, berechtigungslevel 0 für Kernel code
-	gdt_set_gate(2, 0, 0xFFFFFFFF, 0x92, 0xCF)		//	Data, berechtigungslevel 0 für Kernel daten
-	gdt_set_gate(3, 0, 0xFFFFFFFF, 0xFA, 0xCF)		//	Code, berechtigungslevel 3 für Benutzer code
-	gdt_set_gate(4, 0, 0xFFFFFFFF, 0xF2, 0xCF)		//	Dara, berechtigungslevel 3 für Benutzer daten
-	gdt_load();
+
+	// GDT Gates - deskriptoren mit Pointer zur lineare speicher adresse
+	gdt_set_gate(0, 0, 0 0);
+	gdt_set_gate(1, 0, 0xFFFFFFFF, 0x9A, 0xCF); //Code privilege Lvl 0 = Kernel Code
+	gdt_set_gate(2, 0, 0xFFFFFFFF, 0x92, 0xCF); // Data privilege lvl 0 = Kernel Data
+	gdt_set_gate(3, 0, 0xFFFFFFFF, 0xFA, 0xCF); // Code privilege lvl 3 = User
+	gdt_set_gate(4, 0, 0xFFFFFFFF, 0xF2, 0xCF); // Data privilege lvl 3 = user
+
+	gdt_load(); //GDT register (GDTR) der CPU Pointer auf GDT
 }
