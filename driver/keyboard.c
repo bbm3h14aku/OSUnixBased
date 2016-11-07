@@ -15,8 +15,8 @@
  * - keyboard_install //TODO: herraus finden was der genau wo rein installiert wird
  */
 
-#include "keyboard_DEde.h"
-#include "os.h"
+#include "lokals/deDE.h"
+#include "../header/os.h"
 
 int ShiftKeyDown;															// Variable für ShiftKeyDown
 
@@ -59,7 +59,7 @@ unsigned int FetchAndAnalyzeScancode()
 	}
 }
 
-void unsigned char const kgetch()													// Scancode --> ASCII
+unsigned char const kgetch()													// Scancode --> ASCII
 {
 	unsigned int scan;																// Scancode von der Tastatur
 	unsigned char retchar;															// retchar --> rückgabe wert des scnacode als ASCII Code

@@ -12,7 +12,7 @@
  * - upcrs(zeile, spalte)
  *		setzt den cursor an die gewünschte position
  */
-#include "os.h"
+#include "../header/os.h"
 
 void kclrscr()
 {
