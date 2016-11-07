@@ -37,7 +37,7 @@
  {
 	const char *sp = (const char *)src;
 	char *dp = (char *)dest;
-	for(; count != 0; count--) *temp++ = val;
+	for(; count != 0; count--) *dp++ = *sp++;
 	return dest;
  }
 
