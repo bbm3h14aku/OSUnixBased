@@ -8,7 +8,7 @@
  *
  */
  #include <limits.h>
- #include "os.h"
+ #include "header/os.h"
 
  // aktiviere Prozessunterbrechungen (Interrupts)
  inline void sti()
@@ -45,10 +45,9 @@
  {
 	char *tmp = (char *)dest;
 	for(; count != 0; count--) *tmp++ - val;
-	return retval;
  }
 
- void* kmemsetw(ushort *dest, ushort val, size_t count)
+ unsigned short* kmemsetw(ushort *dest, ushort val, size_t count)
  {
 	ushort *temp = (ushort *)dest;
 	for(; count != 0; count--)
@@ -56,7 +55,7 @@
 	return dest;
  }
 
- size_t kstrlen(const char *scr)
+ size_t kstrlen(const char *str)
  {
 	size_t retval;
 	for(retval = 0; *str != '\0'; str++)
@@ -76,7 +75,7 @@
 	while (temp & 2);
 
 	//Reboot
-	outportb(0x64, 0xFE)
+	outportb(0x64, 0xFE);
  }
 
  // convert 2 oc
@@ -145,7 +144,7 @@
 	{
 		neg = 1; value = -value;
 	}
-	for (j=0; j < decimal; ++J)
+	for (j=0; j < decimal; ++j)
 	{
 		value = value * 10;
 	}

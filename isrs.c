@@ -1,4 +1,4 @@
-#include "os.h"
+#include "header/os.h"
 
 // Funktions Prototypen aller Exception Handler Ersten 32 Einträge im IDT sind reserviert und designed für Service Exception
 extern void isr0();
@@ -21,6 +21,7 @@ extern void isr16();
 extern void isr17();
 extern void isr18();
 extern void isr19();
+extern void isr20();
 extern void isr21();
 extern void isr22();
 extern void isr23();
@@ -72,11 +73,23 @@ void isrs_install()
 	idt_set_gate(31, (unsigned) isr31, 0x08, 0x8E);
 }
 
+unsigned char* exception_messages[] =
+{
+    "Division By Zero",        "Debug",                         "Non Maskable Interrupt",    "Breakpoint",
+    "Into Detected Overflow",  "Out of Bounds",                 "Invalid Opcode",            "No Coprocessor",
+    "Double Fault",            "Coprocessor Segment Overrun",   "Bad TSS",                   "Segment Not Present",
+    "Stack Fault",             "General Protection Fault",      "Page Fault",                "Unknown Interrupt",
+    "Coprocessor Fault",       "Alignment Check",               "Machine Check",             "Reserved",
+    "Reserved",                "Reserved",                      "Reserved",                  "Reserved",
+    "Reserved",                "Reserved",                      "Reserved",                  "Reserved",
+    "Reserved",                "Reserved",                      "Reserved",                  "Reserved"
+};
+
 void fault_handler(struct regs* r)
 {
 	if(r->int_no < 32)
 	{
-		kpirntf(exception_message[r->int_no], 7, 0x2);
+		kpirntf(exception_messages[r->int_no], 7, 0x2);
 		kprintf("   Exception. System Halted!\n", 8, 0x2);
 		for(;;);
 	}

@@ -1,4 +1,4 @@
-#include "os.h"
+#include "header/os.h"
 
 extern void irq0();
 extern void irq1();

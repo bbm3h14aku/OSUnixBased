@@ -25,6 +25,6 @@ all:
 	partcopy moonix.bin 0 2800 -f0
 	
 	UNIX
-	dd if=moonix.bin of=~/cd_image.iso
+	dd if=moonix.bin of=~/cd_image.iseide
 	
 	CFLAGS=-nostdlib -nostdinc -fno-builtin -fno-stack-protector -fstrength-reduce -fomit-frame-pointer -finline-functions

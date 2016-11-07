@@ -148,13 +148,6 @@ _isr15:
 	jmp isr_common_stub
 
 ; Rserved Exception
-_isr15:
-	cli
-	push byte 0
-	push byte 15
-	jmp isr_common_stub
-
-; Rserved Exception
 _isr16:
 	cli
 	push byte 0

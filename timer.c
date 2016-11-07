@@ -1,4 +1,4 @@
-#include "os.h"
+#include "header/os.h"
 
 unsigned long timer_ticks = 0;
 unsigned long eticks;
