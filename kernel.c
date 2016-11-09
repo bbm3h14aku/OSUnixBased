@@ -1,10 +1,5 @@
 #include "os.h"
 
-void initOs();
-
-int isLgn = 0;
-int ext = 0;
-
 void initOs()
 {
 	gdt_install();
@@ -18,7 +13,6 @@ void initOs()
 int main()
 {
 	initOs();
-	userLogn();
 	kprintf("*************************************************", 0xA, 1);
 	kprintf("*\t\t WELCOME TO Moonshine Kernel\t\t *", 0xA, 2);
 	kprintf("*\t\t Copyright (c) 2016 Paul & Jan\t\t*", 0xA, 3);

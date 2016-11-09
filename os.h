@@ -12,12 +12,9 @@ typedef unsigned int uint;
 typedef unsigned char uchar;
 typedef unsigned short ushort;
 typedef unsigned long ulong;
-typedef struct { char[] username, char[] password }user;
-
-static int buffer[100] = {0};
 
 // This defines what the stack looks like after an ISR was running
-struct
+struct regs
 {
 	unsigned int gs, fs, es, ds;
 	unsigned int int_no, err_code;
@@ -35,7 +32,7 @@ extern unsigned int kprintf(char * message, unsigned int line, char attribute);
 extern void upcrs(int row, int col);
 
 extern void keyboard_init();
-extern void unsigned char const kgetch();
+extern unsigned char const kgetch();
 extern char * scanf();
 extern unsigned int FetchAndAnalyzeScancode();
 extern void keyboard_handler(struct regs* r);

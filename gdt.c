@@ -21,7 +21,7 @@ struct gdt_ptr
 }__attribute__((packed));
 
 // GDT Entries plus special gdt pointer
-struct gdt_enrty gdt[NUMBER_GDT_GATES];
+struct gdt_entry gdt[NUMBER_GDT_GATES];
 struct gdt_ptr gdt_register;
 
 static void gdt_load()
@@ -38,17 +38,17 @@ void gdt_set_gate(int num, unsigned long base, unsigned long limit, unsigned cha
 
 	//Descriptor Limits
 	gdt[num].limit_low = (limit & 0xFFFF);
-	gdt[num].granularity = ((limit >> 16) & 0xF);
+	gdt[num].granuarity = ((limit >> 16) & 0xF);
 
 	//Granularity und Access Flags
-	gdt[num].granularity |= (0xF0);
+	gdt[num].granuarity |= (0xF0);
 	gdt[num].access = access;
 }
 
 void gdt_install()
 {
 	//Pointer und Limit vorbereiten
-	gdt_register.limit = (sizeof(struct gdt_entry) * NUMBER_OF_GATES) -1;
+	gdt_register.limit = (sizeof(struct gdt_entry) * NUMBER_GDT_GATES) -1;
 	gdt_register.base = (unsigned int) &gdt;
 
 	//TEST
@@ -61,7 +61,7 @@ void gdt_install()
 	kprintf(bufferGDTRLIMIT, 21, 0xA);
 
 	// GDT Gates - deskriptoren mit Pointer zur lineare speicher adresse
-	gdt_set_gate(0, 0, 0 0);
+	gdt_set_gate(0, 0, 0, 0, 0);
 	gdt_set_gate(1, 0, 0xFFFFFFFF, 0x9A, 0xCF); //Code privilege Lvl 0 = Kernel Code
 	gdt_set_gate(2, 0, 0xFFFFFFFF, 0x92, 0xCF); // Data privilege lvl 0 = Kernel Data
 	gdt_set_gate(3, 0, 0xFFFFFFFF, 0xFA, 0xCF); // Code privilege lvl 3 = User

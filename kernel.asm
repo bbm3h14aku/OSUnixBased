@@ -26,6 +26,8 @@ loop_start:
 	mov si, prompt		;zeige Prompt
 	call print_string
 
+	call check64bit
+
 	mov di, sp			;bekomme input
 	call get_string
 	jcxz loop_start		;leere Zeile = ignorieren
@@ -119,6 +121,28 @@ loop_start:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Aufrufe 							 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+check64bit:
+	mov eax, 0x80000001
+	cpuid                  ; CPUID Funktion 0x8000_0001 aufrufen
+	and edx, 0x20000000    ; LM-Bit isolieren
+	test edx, edx          ; Wenn EDX jetzt 0 ist, war das LM-Bit nicht gesetzt
+	jz .long_unsupported    ; Long Mode nicht unterstützt!
+
+	mov eax, 0x00000001
+	cpuid                  ; CPUID Funktion 0x0000_0001 aufrufen
+	and edx, 0x00000040    ; PAE-Bit isolieren
+	test edx, edx          ; Wenn EDX jetzt 0 ist, war das PAE-Bit nicht gesetzt
+	jz .long_unsupported   ; Long Mode nicht unterstützt!
+	jmp .long_supported    ; Long Mode unterstützt!
+
+.long_unsupported:
+	mov si, msg_unsupported
+	call print_string
+
+.long_supported:
+	mov si, msg_supported
+	call print_string
 
 empty_8042:
 	call Waitingloop
@@ -290,7 +314,8 @@ msg_reboot db 'Neustart wird jetzt durchgefuehrt', 13, 10, 0
 msg_pm db 'Wechsel in den Protected Mode', 13, 10, 0
 msg_pm2 db 'OS laueft bereits im Protected Mode', 13, 10, 0
 msg_calc db 'Bitte geben Sie den X Wert ein', 13, 10, 0
-
+msg_unsupported db 'amd64 LongMode unsupported by your CPU', 13, 10, 0
+msg_supported db 'amd64 LongMode supported by your CPU but not by other OS', 13, 10, 0
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;	includes					  ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

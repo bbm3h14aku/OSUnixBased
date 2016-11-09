@@ -1,5 +1,5 @@
 /*
- * VideoTreiber 
+ * VideoTreiber
  * Version 0.1a vom 29/04/2016
  * by Jan - Frederic Kurzweil
  * Funktionsumfang
@@ -10,7 +10,7 @@
  *		das zweite Attribut bezeichnet die zeile
  *		das dritte Attribut bezeichnet das Attribut für die Nachricht z.b die farbe der Ausgabe
  * - upcrs(zeile, spalte)
- *		setzt den cursor an die gewünschte position 
+ *		setzt den cursor an die gewünschte position
  */
 #include "os.h"
 
@@ -23,13 +23,13 @@ void kclrscr()
 		vidmem[i] = 0x0A200A20;
 		++i;
 	};
-};
+}
 
 unsigned int kprintf(char *message, unsigned int line, char attribute)
 {
 	char* vidmem = (char*) 0xb8000;
 	uint i = line * 80 * 2;
-	
+
 	while(*message != 0)
 	{
 		if(*message == '\n')
@@ -53,11 +53,11 @@ unsigned int kprintf(char *message, unsigned int line, char attribute)
 void upcrs(int row, int col)
 {
 	ushort position = (row * 80) + col;
-	
+
 	//Cursor HIGH Port in vga Index Register
 	outportb(0x3D4, 0x0E);
 	outportb(0x3D5, (unsigned char) ((position>>8)&0xFF));
 	// Cursor LOW Port in vga Index Register
 	outportb(0x3D4, 0x0F);
 	outportb(0x3D5, (unsigned short)(position & 0xFF));
-};
+}

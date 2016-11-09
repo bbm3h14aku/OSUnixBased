@@ -6,7 +6,7 @@
  * - keyboard_init
  * 		leerlauf, falls der Puffer leer sein sollte
  * - FetchAndAnalyzeScancode
- *		Analyse des Scancode, es wird geprüft ob die Shift Tate 
+ *		Analyse des Scancode, es wird geprüft ob die Shift Tate
  *		gedrückt wurde und gibt dann den richtigen ASCII code zuürck um das Zeichen darstellen zukönnen
  * - kgetch
  * 		öffentliche Funktion zum einlesen von zeichen von der Tastatur es wird ein ASCII Code zurück gegeben
@@ -14,8 +14,8 @@
  * 		testhandler um zu prüfen ob Tastatur eingaben erkannt und korrekt verarbeitet werden
  * - keyboard_install //TODO: herraus finden was der genau wo rein installiert wird
  */
- 
-#include "keyboard_DEde.h"
+
+#include "keyboard.h"
 #include "os.h"
 
 int ShiftKeyDown;															// Variable für ShiftKeyDown
@@ -26,34 +26,40 @@ void keyboard_init()														// Warte falls der Puffer leer ist
 		inportb(0x60);
 }
 
+unsigned int FetchScancode()
+{
+	// Port 0x60 Scancode von Tastatur  lesen
+	return ( inportb(0x60));
+}
+
 unsigned int FetchAndAnalyzeScancode()
 {
 	unsigned int scancode;															// tastatur scancode
 	while(TRUE)																// Schleife nach dem eine (w/o shift key) Taste gedrückt wurde
 	{
-		scancode = inportb(0x60);											// 0x60 lese scancode von der Tastatur
-		if( scancode & 0x80 )												// Wurde die Taste los gelassen ? prüfe Bit 7 (100000000b = 0x80) des scancodes 
+		while( !(inportb(0x60)&1)); // 0x60 lese scancode von der Tastatur
+		scancode = FetchScancode();
+		if( scancode & 0x80 )												// Wurde die Taste los gelassen ? prüfe Bit 7 (100000000b = 0x80) des scancodes
 		{
-			scancode &= 0x7F;												// Taste wurde losgelassen, verarbeite nur die 7 low bits (01111111b = 0x7F) 
+			scancode &= 0x7F;												// Taste wurde losgelassen, verarbeite nur die 7 low bits (01111111b = 0x7F)
 			if(scancode == KRLEFT_SHIFT || scancode == KRRIGHT_SHIFT)		// prüfe ob shift gedrückt
 			{
-				ShiftKeyDown = 0;											// Nein Shift wurde nicht gedrückt --> NonShift
+				ShiftKeyDown = 0;
+				// Nein Shift wurde nicht gedrückt --> NonShift
+				continue;
 			}
 		}
-		else																// Taste wurde gedrückt
+		if ( scancode == KRLEFT_SHIFT || KRRIGHT_SHIFT )				// erfasse scancode der shift taste, falls diese gedrückt wurde
 		{
-			if ( scancode == KRLEFT_SHIFT || KRRIGHT_SHIFT )				// erfasse scancode der shift taste, falls diese gedrückt wurde
-			{
-				ShiftKeyDown = 1;											// Falls die taste gedrückt wurde, benutze die asciiShift Zeichen
-				continue;													// schleife damit nicht der scancode oder shift taste zurück gegeben wird
-			}
+			ShiftKeyDown = 1;											// Falls die taste gedrückt wurde, benutze die asciiShift Zeichen
+			continue;													// schleife damit nicht der scancode oder shift taste zurück gegeben wird
 		}
-		break;																// verlasse die schleife
+		// verlasse die schleife
+		return scancode;
 	}
-	return scancode;
 }
 
-void unsigned char const kgetch()													// Scancode --> ASCII
+unsigned char const kgetch()													// Scancode --> ASCII
 {
 	unsigned int scan;																// Scancode von der Tastatur
 	unsigned char retchar;															// retchar --> rückgabe wert des scnacode als ASCII Code
@@ -67,10 +73,8 @@ void unsigned char const kgetch()													// Scancode --> ASCII
 
 void keyboard_handler(struct regs* r)
 {
-	kprintf("keyboard handöer successfull init", 8, 0x2);
 	uchar bufferKey[10];
 	bufferKey[0] = kgetch();
-	kprintf(bufferKey, 10, 0xA);
 }
 
 void keyboard_install()														// Installiere den "Keyboard_Handler" in irq1
