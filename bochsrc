@@ -1,0 +1,10 @@
+#Enable Mouse
+mouse: enabled=1
+#
+ata0-master: type=disk, path=moonix.iso
+#
+log: bochs_log.txt
+#
+boot: disk
+
+
