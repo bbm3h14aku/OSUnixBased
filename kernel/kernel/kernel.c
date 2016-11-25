@@ -5,6 +5,8 @@
 #include <kernel/tty.h>
 #include <kernel/color.h>
 
+
+
 void printcat()
 {
 	terminal_writestring("   --              --");
@@ -33,9 +35,23 @@ void kernel_main(void)
 	printcat();
 	terminal_setcolor(1);
 	terminal_writestring("");
+
 	terminal_writestring(">> ");
-	for(i = 0; i < 15; i++)
-		terminal_writecolorstring("TEST", i);
+	terminal_setcolor(15);
+	/*for(i = 0; i < 15; i++)
+		terminal_writecolorstring("TEST", i);*/
 	init_keyboard();
-	getchar();
+
+
+	chyar text;
+	char lastchar;
+	while(1)
+	{
+        lastchar = text;
+		text = getchar();
+		if(text != lastchar)
+			putchar(text);
+	}
+
 }
+
