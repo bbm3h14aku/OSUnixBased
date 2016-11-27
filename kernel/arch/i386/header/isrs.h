@@ -1,43 +1,44 @@
-#ifndef ISRS_H
-#define ISRS_H
+#ifndef _ISRS_H
+#define _ISRS_H
+
 #include <stdio.h>
 #include <register.h>
 
 // Funktions Prototypen aller Exception Handler Ersten 32 Einträge im IDT sind reserviert und designed für Service Exception
-extern void isr0();
-extern void isr1();
-extern void isr2();
-extern void isr3();
-extern void isr4();
-extern void isr5();
-extern void isr6();
-extern void isr7();
-extern void isr8();
-extern void isr9();
-extern void isr10();
-extern void isr11();
-extern void isr12();
-extern void isr13();
-extern void isr14();
-extern void isr15();
-extern void isr16();
-extern void isr17();
-extern void isr18();
-extern void isr19();
-extern void isr20();
-extern void isr21();
-extern void isr22();
-extern void isr23();
-extern void isr24();
-extern void isr25();
-extern void isr26();
-extern void isr27();
-extern void isr28();
-extern void isr29();
-extern void isr30();
-extern void isr31();
+ void _isr0();
+ void _isr1();
+ void _isr2();
+ void _isr3();
+ void _isr4();
+ void _isr5();
+ void _isr6();
+ void _isr7();
+ void _isr8();
+ void _isr9();
+ void _isr10();
+ void _isr11();
+ void _isr12();
+ void _isr13();
+ void _isr14();
+ void _isr15();
+ void _isr16();
+ void _isr17();
+ void _isr18();
+ void _isr19();
+ void _isr20();
+ void _isr21();
+ void _isr22();
+ void _isr23();
+ void _isr24();
+ void _isr25();
+ void _isr26();
+ void _isr27();
+ void _isr28();
+ void _isr29();
+ void _isr30();
+ void _isr31();
 
-void fault_handler(struct regs*);
+void _fault_handler(struct regs*);
 void isrs_install();
 
 #endif
