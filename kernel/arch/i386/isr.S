@@ -67,254 +67,254 @@
 
 _isr0:
 	cli
-	push $0
-	push $0
+	pushl $0
+	pushl $0
 	jmp isr_common_stub
 
 # Debug Exception
 
 _isr1:
 	cli
-	push $0
-	push $1
+	pushl $0
+	pushl $1
 	jmp isr_common_stub
 
 # Non Maskable Exception
 
 _isr2:
 	cli
-	push $0
-	push $2
+	pushl $0
+	pushl $2
 	jmp isr_common_stub
 
 # Int 3 Exception
 _isr3:
 	cli
-	push $0
-	push $3
+	pushl $0
+	pushl $3
 	jmp isr_common_stub
 
 # Into Exception
 _isr4:
 	cli
-	push $0
-	push $4
+	pushl $0
+	pushl $4
 	jmp isr_common_stub
 
 # Out of Bounds
 _isr5:
 	cli
-	push $0
-	push $5
+	pushl $0
+	pushl $5
 	jmp isr_common_stub
 
 # Invalid Opcode Exception
 _isr6:
 	cli
-	push $0
-	push $6
+	pushl $0
+	pushl $6
 	jmp isr_common_stub
 
 # Coprozessor Not Available Exception
 _isr7:
 	cli
-	push $0
-	push $7
+	pushl $0
+	pushl $7
 	jmp isr_common_stub
 
 # Double Fault Exception (Mit error code)
 _isr8:
 	cli
-	push $0
-	push $8
+	pushl $0
+	pushl $8
 	jmp isr_common_stub
 
 # Coprocessor Segement Overrun Exception
 _isr9:
 	cli
-	push $0
-	push $9
+	pushl $0
+	pushl $9
 	jmp isr_common_stub
 
 # Bad TSS Exception (Mit Error Code)
 _isr10:
 	cli
-	push $0
-	push $10
+	pushl $0
+	pushl $10
 	jmp isr_common_stub
 
 # Segement not Present Exception
 _isr11:
 	cli
-	push $0
-	push $11
+	pushl $0
+	pushl $11
 	jmp isr_common_stub
 
 # Stack Fault Exception
 _isr12:
 	cli
-	push $0
-	push $12
+	pushl $0
+	pushl $12
 	jmp isr_common_stub
 
 # Genreal Protection Fault Exception
 _isr13:
 	cli
-	push $0
-	push $13
+	pushl $0
+	pushl $13
 	jmp isr_common_stub
 
 # Page Fault Exception
 _isr14:
 	cli
-	push $0
-	push $14
+	pushl $0
+	pushl $14
 	jmp isr_common_stub
 
 # Rserved Exception
 _isr15:
 	cli
-	push $0
-	push $15
+	pushl $0
+	pushl $15
 	jmp isr_common_stub
 
 # Rserved Exception
 _isr16:
 	cli
-	push $0
-	push $16
+	pushl $0
+	pushl $16
 	jmp isr_common_stub
 
 # Rserved Exception
 _isr17:
 	cli
-	push $0
-	push $17
+	pushl $0
+	pushl $17
 	jmp isr_common_stub
 
 # Rserved Exception
 _isr18:
 	cli
-	push $0
-	push $18
+	pushl $0
+	pushl $18
 	jmp isr_common_stub
 
 # Rserved Exception
 _isr19:
 	cli
-	push $0
-	push $19
+	pushl $0
+	pushl $19
 	jmp isr_common_stub
 
 # Rserved Exception
 _isr20:
 	cli
-	push $0
-	push $20
+	pushl $0
+	pushl $20
 	jmp isr_common_stub
 
 # Rserved Exception
 _isr21:
 	cli
-	push $0
-	push $21
+	pushl $0
+	pushl $21
 	jmp isr_common_stub
 
 # Rserved Exception
 _isr22:
 	cli
-	push $0
-	push $22
+	pushl $0
+	pushl $22
 	jmp isr_common_stub
 
 # Rserved Exception
 _isr23:
 	cli
-	push $0
-	push $15
+	pushl $0
+	pushl $15
 	jmp isr_common_stub
 
 # 24: Reserved
 _isr24:
     cli
-    push $0
-    push $24
+    pushl $0
+    pushl $24
     jmp isr_common_stub
 
 # 25: Reserved
 _isr25:
     cli
-    push $0
-    push $25
+    pushl $0
+    pushl $25
     jmp isr_common_stub
 
 # 26: Reserved
 _isr26:
     cli
-    push $0
-    push $26
+    pushl $0
+    pushl $26
     jmp isr_common_stub
 
 # 27: Reserved
 _isr27:
     cli
-    push $0
-    push $27
+    pushl $0
+    pushl $27
     jmp isr_common_stub
 
 # 28: Reserved
 _isr28:
     cli
-    push $0
-    push $28
+    pushl $0
+    pushl $28
     jmp isr_common_stub
 
 # 29: Reserved
 _isr29:
     cli
-    push $0
-    push $29
+    pushl $0
+    pushl $29
     jmp isr_common_stub
 
 # 30: Reserved
 _isr30:
     cli
-    push $0
-    push $30
+    pushl $0
+    pushl $30
     jmp isr_common_stub
 
 # 31: Reserved
 _isr31:
     cli
-    push $0
-    push $31
+    pushl $0
+    pushl $31
     jmp isr_common_stub
 
 # externe C funktion fault_handler
-extern _fault_handler
+.globl _fault_handler
 # Prozessor status wird gespeichert, Kernel Segemente werden gesetzt, und C-fault_handler wird aufgerufen, stack frame wird wieder hergestellt
 isr_common_stub:
 	pusha
-	push %ds
-	push %es
-	push %fs
-	push %gs
+	pushl %ds
+	pushl %es
+	pushl %fs
+	pushl %gs
 	movw %ax, 0x10
 	movw %ds, %ax
 	movw %es, %ax
 	movw %fs, %ax
 	movw %gs, %ax
 	movl %eax, %esp
-	push %eax
-	movl %eax, _fault_handler
-	call %eax
+	pushl %eax
+	movl $_fault_handler, %eax
+	call *%eax
 	pop %eax
 	pop %gs
 	pop %fs
 	pop %es
 	pop %ds
 	popa
-	addl %esp, $8
+	addl $8, %esp
 	iret
 
 # Interrupt Request
@@ -336,126 +336,143 @@ isr_common_stub:
 .global _irq14
 .global _irq15
 
+.type _irq0, @function
+.type _irq1, @function
+.type _irq2, @function
+.type _irq3, @function
+.type _irq4, @function
+.type _irq5, @function
+.type _irq6, @function
+.type _irq7, @function
+.type _irq8, @function
+.type _irq9, @function
+.type _irq10, @function
+.type _irq11, @function
+.type _irq12, @function
+.type _irq13, @function
+.type _irq14, @function
+.type _irq15, @function
+
 #  32: IRQ0
 _irq0:
     cli
-    push $0
-    push $32
+    pushl $0
+    pushl $32
     jmp irq_common_stub
 
 # 33: IRQ1
 _irq1:
     cli
-    push $0
-    push $33
+    pushl $0
+    pushl $33
     jmp irq_common_stub
 
 # 34: IRQ2
 _irq2:
     cli
-    push $0
-    push $34
+    pushl $0
+    pushl $34
     jmp irq_common_stub
 
 # 35: IRQ3
 _irq3:
     cli
-    push $0
-    push $35
+    pushl $0
+    pushl $35
     jmp irq_common_stub
 
 # 36: IRQ4
 _irq4:
     cli
-    push $0
-    push $36
+    pushl $0
+    pushl $36
     jmp irq_common_stub
 
 # 37: IRQ5
 _irq5:
     cli
-    push $0
-    push $37
+    pushl $0
+    pushl $37
     jmp irq_common_stub
 
 # 38: IRQ6
 _irq6:
     cli
-    push $0
-    push $38
+    pushl $0
+    pushl $38
     jmp irq_common_stub
 
 # 39: IRQ7
 _irq7:
     cli
-    push $0
-    push $39
+    pushl $0
+    pushl $39
     jmp irq_common_stub
 
 # 40: IRQ8
 _irq8:
     cli
-    push $0
-    push $40
+    pushl $0
+    pushl $40
     jmp irq_common_stub
 
 # 41: IRQ9
 _irq9:
     cli
-    push $0
-    push $41
+    pushl $0
+    pushl $41
     jmp irq_common_stub
 
 # 42: IRQ10
 _irq10:
     cli
-    push $0
-    push $42
+    pushl $0
+    pushl $42
     jmp irq_common_stub
 
 # 43: IRQ11
 _irq11:
     cli
-    push $0
-    push $43
+    pushl $0
+    pushl $43
     jmp irq_common_stub
 
 # 44: IRQ12
 _irq12:
     cli
-    push $0
-    push $44
+    pushl $0
+    pushl $44
     jmp irq_common_stub
 
 # 45: IRQ13
 _irq13:
     cli
-    push $0
-    push $45
+    pushl $0
+    pushl $45
     jmp irq_common_stub
 
 # 46: IRQ14
 _irq14:
     cli
-    push $0
-    push $46
+    pushl $0
+    pushl $46
     jmp irq_common_stub
 
 # 47: IRQ15
 _irq15:
     cli
-    push $0
-    push $47
+    pushl $0
+    pushl $47
     jmp irq_common_stub
 
-extern _irq_handler
+.globl _irq_handler
 
 irq_common_stub:
 	pusha
-	push %ds
-	push %es
-	push %fs
-	push %gs
+	pushl %ds
+	pushl %es
+	pushl %fs
+	pushl %gs
 
 	movw %ax, 0x10
 	movw %ds, %ax
@@ -464,9 +481,9 @@ irq_common_stub:
 	movw %gs, %ax
 	movl %eax, %esp
 
-	push %eax
-	movl %eax, _irq_handler
-	call %eax
+	pushl %eax
+	movl $_irq_handler, %eax
+	call *%eax
 	pop %eax
 
 	pop %gs
@@ -474,5 +491,5 @@ irq_common_stub:
 	pop %es
 	pop %ds
 	popa
-	addl %esp, $8
+	addl $8, %esp
 	iret
