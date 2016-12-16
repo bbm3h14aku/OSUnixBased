@@ -31,9 +31,9 @@ _start:
 
 	call pm
 	
-	call hl
+	#call hl
 	#Transfer control to the main kernel.
-	call kernel_main
+	#call kernel_main
 
 	# Hang if kernel_main unexpectedly returns.
 	cli
@@ -129,45 +129,100 @@ pm:
 	call clrscr
     mov msg_pm, %si
     call print_string
-    #call Waitingloop
-	ret
-/*
-    cli               ; clear interrupts
+    call Waitingloop
+	
 
-    lgdt [gdtr]       ; load GDT via GDTR (defined in file "gtd.inc")
+    cli					#clear interrupts
 
-; we actually only need to do this ONCE, but for now it doesn't hurt to do this more often when
-; switching between RM and PM
-    in  al, 0x92      ; switch A20 gate via fast A20 port 92
-    cmp al, 0xff      ; if it reads 0xFF, nothing's implemented on this port
+    lgdt (gdtr)			#load GDT via GDTR (defined in file "gtd.inc")
+
+#we actually only need to do this ONCE, but for now it doesn't hurt to do this more often when
+#switching between RM and PM
+    in  $0x92, %al		#switch A20 gate via fast A20 port 92
+    cmp $0xff, %al      #if it reads 0xFF, nothing's implemented on this port
     je .no_fast_A20
    
-    or  al, 2         ; set A20_Gate_Bit (bit 1)
-    and al, ~1        ; clear INIT_NOW bit (don't reset pc...)
-    out 0x92, al
+    or  $2, %al         #set A20_Gate_Bit (bit 1)
+    and $0x01, %al			#clear INIT_NOW bit (don't reset pc...)
+    out %al, $0x92
     jmp .A20_done
    
-.no_fast_A20:         ; no fast shortcut -> use the slow kbc...
+.no_fast_A20:         #no fast shortcut -> use the slow kbc...
     call empty_8042  
    
-    mov al, 0xD1      ; kbc command: write to output port
-    out 0x64, al
+    mov $0xD1, %al      #kbc command: write to output port
+    out %al, $0x64
     call empty_8042
    
-    mov al, 0xDF      ; writing this to kbc output port enables A20
-    out 0x60, al
+    mov $0xDF, %al      #writing this to kbc output port enables A20
+    out %al, $0x60
     call empty_8042
 
 .A20_done:
-    mov eax, cr0      ; switch-over to Protected Mode
-    or  eax, 1        ; set bit 0 of CR0 register
-    mov cr0, eax      ;
+    mov %cr0, %eax    #switch-over to Protected Mode
+    or  $1, %eax        #set bit 0 of CR0 register
+    mov %eax, %cr0      
 
-    jmp 0x8:ProtectedMode*/
+    #jmp 0x8:ProtectedMode
+
+##################
+# Protected Mode #
+##################
+
+#[Bits 32]
+
+ProtectedMode:
+    mov    $0x10, %ax
+    mov    %ax, %ds			#data descriptor --> data, stack and extra segment
+    mov    %ax, %ss            
+    mov    %ax, %es
+    xor    %eax, %eax		#null desriptor --> FS and GS
+    mov    %ax, %fs
+    mov    %ax, %gs
+    mov    $0x200000, %esp	#set stack below 2 MB limit
+
+	call kernel_main
+    #call clrscr_32
+    #mov $0x01, %ah
+.endlessloop:
+    call Waitingloop
+    inc %ah
+    and $0x0f, %ah
+    #mov esi, msg_pm2		#'OS currently uses Protected Mode.'
+    #call PutStr_32
+    #cmp dword [PutStr_Ptr], 25 * 80 * 2 + 0xB8000
+    #jb .endlessloop
+    #mov dword [PutStr_Ptr], 0xB8000		#text pointer wrap-arround
+    jmp .endlessloop
+	
+	cli
+	hlt        
+
+PutStr_32:     
+    mov PutStr_Ptr, %edi
+.nextchar:
+    lodsb
+    test %al, %al         
+    jz .end     
+    stosw
+    jmp .nextchar 
+  .end:
+    mov %edi, PutStr_Ptr
+    ret 
+
+clrscr_32:
+    mov $0xb8000, %edi
+    mov %edi, PutStr_Ptr
+    mov $(40 * 25), %ecx
+    mov $0x07200720, %eax
+    #rep #stosd
+    ret
+
+PutStr_Ptr: .long 0xb8000
 
 
 msg_pm:
-.ascii "Test"
+	.ascii "Test"
 
 .size _start, . - _start
 
