@@ -1,2 +1,1 @@
-# bibos
-OS development by bib Bergisch Gladbach
+# OS Development
